@@ -1,1 +1,25 @@
-docker run -td --name test -p 8081:80 -p 5060 opensips-docker
+## Installing
+Download to a local folder
+
+```bash
+$ git clone https://github.com/QantumEntangled/opensips-docker.git
+$ cd opensips-docker
+```
+
+Build the docker image
+
+```bash
+$ docker build -t opensips-docker ./
+```
+
+Run the docker container
+
+```bash
+$ docker run -td --name opensips-container -p 80:80 -p 5060 --cap-add=NET_ADMIN opensips-docker
+```
+
+To log into the container to make configuration changes
+
+```bash
+$ docker exec -it opensips-container /bin/bash
+```
