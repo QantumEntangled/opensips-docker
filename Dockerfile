@@ -21,9 +21,11 @@ RUN chmod 777 /run.sh
 RUN apt install -y debconf-utils \
 	&& echo "mysql-server mysql-server/root_password password mysql" | sudo debconf-set-selections \
 	&& echo "mysql-server mysql-server/root_password_again password mysql" | sudo debconf-set-selections \
-	&& apt install -y apache2 libapache2-mod-php5 php5-curl php5 php5-gd php5-mysql php5-xmlrpc php-pear php5-cli git mysql-server
+	&& apt install -y apache2 libapache2-mod-php5 php5-curl php5 php5-gd php5-mysql php5-xmlrpc php-pear php5-cli git mysql-server iptables opensips-mysql-module expect
 
 COPY apache2-opensips.conf /etc/apache2/sites-available/opensips.conf
+COPY etc-opensips/opensipsctlrc /etc/opensips/opensipsctlrc
+COPY dbcreate.sh /root/dbcreate.sh
 
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf \
 	&& a2dissite 000-default.conf \
@@ -38,7 +40,7 @@ RUN cd /var/www \
 	&& cd /var/www/opensips-cp/
 
 RUN service mysql start \
-	&& mysql --password=mysql -e "CREATE DATABASE opensips" \
+	&& expect -f /root/dbcreate.sh \
 	&& mysql --password=mysql -e "GRANT ALL PRIVILEGES ON opensips.* TO opensips@localhost IDENTIFIED BY 'opensipsrw'" \
 	&& mysql --password=mysql -Dopensips < /var/www/opensips-cp/config/tools/admin/add_admin/ocp_admin_privileges.mysql \
 	&& mysql --password=mysql -Dopensips -e "INSERT INTO ocp_admin_privileges (username,password,ha1,available_tools,permissions) values ('admin','admin',md5('admin:admin'),'all','all');" \
