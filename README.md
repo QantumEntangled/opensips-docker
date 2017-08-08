@@ -15,7 +15,7 @@ $ docker build -t opensips-docker ./
 Run the docker container
 
 ```Bash
-$ docker run -td --name opensips-container -p 80:80 -p 5060 --cap-add=NET_ADMIN opensips-docker
+$ docker run -td --name opensips-container -p 80 -p 443 -p 5060 --cap-add=NET_ADMIN opensips-docker
 ```
 
 To log into the container to make configuration changes

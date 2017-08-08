@@ -30,6 +30,7 @@ COPY dbcreate.sh /root/dbcreate.sh
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf \
 	&& a2dissite 000-default.conf \
 	&& a2ensite opensips.conf \
+	&& a2enmod ssl \
 	&& pear install MDB2 \
 	&& pear install MDB2#mysql \
 	&& pear install log
